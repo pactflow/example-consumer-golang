@@ -25,7 +25,7 @@ func TestConsumer(t *testing.T) {
 		client := NewClient(fmt.Sprintf("http://localhost:%d", pact.Server.Port))
 		_, err := client.GetProduct("10")
 
-		// TODO: assert things on product
+		// TODO: assert things on product...
 
 		return err
 		// Call the API client
@@ -42,7 +42,7 @@ func TestConsumer(t *testing.T) {
 		}).
 		WillRespondWith(dsl.Response{
 			Status:  200,
-			Headers: dsl.MapMatcher{"Content-Type": dsl.String("application/json")},
+			Headers: dsl.MapMatcher{"Content-Type": dsl.Regex("application/json", "application/json;?.*")},
 			Body:    dsl.Match(&Product{}),
 		})
 
