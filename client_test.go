@@ -7,31 +7,17 @@ import (
 	"testing"
 
 	"github.com/pact-foundation/pact-go/dsl"
+	"github.com/stretchr/testify/assert"
 )
 
-// make test
 func TestConsumer(t *testing.T) {
-
-	// Create Pact connecting to local Daemon
 	pact := &dsl.Pact{
 		Consumer: "pactflow-example-consumer-golang",
 		Provider: getProviderName(),
-		Host:     "localhost",
 	}
 	defer pact.Teardown()
 
-	// Pass in test case
-	var test = func() error {
-		client := NewClient(fmt.Sprintf("http://localhost:%d", pact.Server.Port))
-		_, err := client.GetProduct("10")
-
-		// TODO: assert things on product...
-
-		return err
-		// Call the API client
-	}
-
-	// Set up our expected interactions.
+	// Arrange
 	pact.
 		AddInteraction().
 		Given("a product with ID 10 exists").
@@ -46,12 +32,25 @@ func TestConsumer(t *testing.T) {
 			Body:    dsl.Match(&Product{}),
 		})
 
-	// Verify
+	// Act
+	var test = func() error {
+		client := NewClient(fmt.Sprintf("http://localhost:%d", pact.Server.Port))
+		product, err := client.GetProduct("10")
+
+		// Perform any unit test expectations here...
+		assert.Equal(t, "10", product.ID)
+
+		return err
+	}
+
+	// Assert
 	if err := pact.Verify(test); err != nil {
 		log.Fatalf("Error on Verify: %v", err)
 	}
 }
 
+// Function to determine which provider should be used. This is not something you'd usually need to do
+// but is helpful here as it allows us to mix and match languages across the demo projects
 func getProviderName() string {
 	if env := os.Getenv("PACT_PROVIDER"); env != "" {
 		return env
