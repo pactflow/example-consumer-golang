@@ -114,5 +114,5 @@ test_github_webhook:
 install:
 	@if [ ! -d pact/bin ]; then\
 		@echo "--- 🐿 Installing Pact CLI dependencies"; \
-		curl -fsSL https://raw.githubusercontent.com/you54f/pact-ruby-standalone/ruby_3.1.2_upgrade/install.sh | bash -x; \
+		curl -fsSL https://raw.githubusercontent.com/you54f/pact-ruby-standalone/master/install.sh | bash -x; \
   fi
