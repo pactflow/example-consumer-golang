@@ -6,7 +6,11 @@ GITHUB_WEBHOOK_UUID := ""
 PACT_CHANGED_WEBHOOK_UUID := ""
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 export PATH := $(PWD)/pact/bin:$(PATH)
-
+PACT_GO_VERSION=2.0.8
+PACT_DOWNLOAD_DIR=/tmp
+ifeq ($(OS),Windows_NT)
+	PACT_DOWNLOAD_DIR=$$TMP
+endif
 # Only deploy from master
 ifeq ($(GIT_BRANCH),master)
 	DEPLOY_TARGET=deploy
@@ -32,7 +36,7 @@ fake_ci: .env
 	make ci
 
 publish_pacts: .env
-	@"${PACT_CLI}" publish ${PWD}/pacts --consumer-app-version ${GIT_COMMIT} --tag ${GIT_BRANCH}
+	@"${PACT_CLI}" publish ${PWD}/pacts --consumer-app-version ${GIT_COMMIT} --branch ${GIT_BRANCH}
 
 ## =====================
 ## Build/test tasks
@@ -45,12 +49,12 @@ test: .env install
 ## Deploy tasks
 ## =====================
 
-deploy: deploy_app tag record_deployment
+deploy: deploy_app record_deployment
 
 no_deploy:
 	@echo "Not deploying as not on master branch"
 
-can_i_deploy: .env
+can_i_deploy: .env install_cli
 	@echo "can_i_deploy"
 	@"${PACT_CLI}" broker can-i-deploy \
 	  --pacticipant ${PACTICIPANT} \
@@ -62,14 +66,7 @@ can_i_deploy: .env
 deploy_app:
 	@echo "Deploying to prod"
 
-tag: .env
-	@"${PACT_CLI}" broker create-version-tag \
-	  --pacticipant ${PACTICIPANT} \
-	  --version ${GIT_COMMIT} \
-		--auto-create-version \
-	  --tag ${GIT_BRANCH}
-
-record_deployment: .env
+record_deployment: .env install_cli
 	@"${PACT_CLI}" broker record-deployment --pacticipant ${PACTICIPANT} --version ${GIT_COMMIT} --environment production
 
 ## =====================
@@ -112,6 +109,10 @@ test_github_webhook:
 	touch .env
 
 install:
+	go install github.com/pact-foundation/pact-go/v2@v$(PACT_GO_VERSION)
+	pact-go -l DEBUG install --libDir $(PACT_DOWNLOAD_DIR);
+
+install_cli:
 	@if [ ! -d pact/bin ]; then\
 		@echo "--- 🐿 Installing Pact CLI dependencies"; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
