@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -31,7 +31,7 @@ func (c *Client) GetProduct(id string) (*Product, error) {
 		return nil, fmt.Errorf("unable to retrieve product: %v", err)
 	}
 
-	data, err := ioutil.ReadAll(res.Body)
+	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

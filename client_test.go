@@ -2,51 +2,52 @@ package main
 
 import (
 	"fmt"
-	"log"
+	// "log"
 	"os"
 	"testing"
 
-	"github.com/pact-foundation/pact-go/dsl"
+	"github.com/pact-foundation/pact-go/v2/consumer"
+	"github.com/pact-foundation/pact-go/v2/matchers"
 	"github.com/stretchr/testify/assert"
 )
 
+var Regex = matchers.Regex
+
 func TestConsumer(t *testing.T) {
-	pact := &dsl.Pact{
+	mockProvider, err := consumer.NewV2Pact(consumer.MockHTTPProviderConfig{
 		Consumer: "pactflow-example-consumer-golang",
 		Provider: getProviderName(),
-	}
-	defer pact.Teardown()
+	})
+	assert.NoError(t, err)
 
 	// Arrange
-	pact.
+	err = mockProvider.
 		AddInteraction().
 		Given("a product with ID 10 exists").
 		UponReceiving("a request to get a product").
-		WithRequest(dsl.Request{
-			Method: "GET",
-			Path:   dsl.String("/product/10"),
+		WithRequest("GET", "/product/10").
+		WillRespondWith(200, func(b *consumer.V2ResponseBuilder) {
+			b.Header("Content-Type", Regex("application/json", "application/json;?.*")).
+				BodyMatch(&Product{})
 		}).
-		WillRespondWith(dsl.Response{
-			Status:  200,
-			Headers: dsl.MapMatcher{"Content-Type": dsl.Regex("application/json", "application/json;?.*")},
-			Body:    dsl.Match(&Product{}),
+		ExecuteTest(t, func(config consumer.MockServerConfig) error {
+			// Act: test our API client behaves correctly
+			// Initialize the API client and point it at the Pact mock server
+			client := NewClient(fmt.Sprintf("http://%s:%d", config.Host, config.Port))
+
+			// Execute the API client
+			product, err := client.GetProduct("10")
+
+			// Assert: check the result
+			assert.NoError(t, err)
+			assert.Equal(t, "10", product.ID)
+			return err
 		})
 
-	// Act
-	var test = func() error {
-		client := NewClient(fmt.Sprintf("http://localhost:%d", pact.Server.Port))
-		product, err := client.GetProduct("10")
-
-		// Perform any unit test expectations here...
-		assert.Equal(t, "10", product.ID)
-
-		return err
-	}
+	assert.NoError(t, err)
 
 	// Assert
-	if err := pact.Verify(test); err != nil {
-		log.Fatalf("Error on Verify: %v", err)
-	}
+
 }
 
 // Function to determine which provider should be used. This is not something you'd usually need to do
