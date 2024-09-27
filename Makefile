@@ -42,7 +42,7 @@ publish_pacts: .env
 ## Build/test tasks
 ## =====================
 
-test: .env install
+test: .env
 	go test -v .
 
 ## =====================
@@ -60,7 +60,7 @@ can_i_deploy: .env install_cli
 	  --pacticipant ${PACTICIPANT} \
 	  --version ${GIT_COMMIT} \
 	  --to-environment production \
-	  --retry-while-unknown 0 \
+	  --retry-while-unknown 5 \
 	  --retry-interval 10
 
 deploy_app:

@@ -7,7 +7,6 @@ on:
 env:
   PACT_BROKER_BASE_URL: https://test.pactflow.io
   PACT_BROKER_TOKEN: ${{ secrets.PACTFLOW_TOKEN_FOR_CI_CD_WORKSHOP }}
-  REACT_APP_API_BASE_URL: http://localhost:8080
   GIT_COMMIT: ${{ github.sha }}
   GIT_REF: ${{ github.ref }}
 
@@ -27,10 +26,12 @@ jobs:
             # 'pactflow-example-bi-directional-provider-dotnet'
           ]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
-          go-version: '^1.14.x'
+          go-version: '^1.22.x'
+      - name: install pact-go shared libraries
+        run: make install
       - name: Test for ${{ matrix.pact_provider }}
         run: make test
         env:
@@ -45,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Can I deploy?
         run: GIT_BRANCH=${GIT_REF:11} make can_i_deploy
@@ -55,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: can-i-deploy
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: docker pull pactfoundation/pact-cli:latest
       - name: Deploy
         run: GIT_BRANCH=${GIT_REF:11} make deploy
