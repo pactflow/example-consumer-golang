@@ -17,6 +17,7 @@ type Product struct {
 	ID   string `json:"id" pact:"example=10"`
 	Name string `json:"name" pact:"example=pizza"`
 	Type string `json:"type" pact:"example=food"`
+	Value int `json:"value" pact:"example=10"`
 }
 
 // NewClient returns a new initialised API Client
