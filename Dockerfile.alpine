@@ -1,0 +1,10 @@
+ARG VERSION=1.22
+FROM golang:${VERSION}-alpine
+
+RUN apk add --no-cache curl gcc musl-dev bash make
+
+COPY . /go/src/github.com/pactflow/example-consumer-golang
+
+WORKDIR /go/src/github.com/pactflow/example-consumer-golang
+
+CMD ["sh", "-c", "make install && make test"]

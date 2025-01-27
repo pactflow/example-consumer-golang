@@ -1,0 +1,9 @@
+ARG VERSION=latest
+FROM golang:${VERSION}
+
+RUN apt-get update && apt-get install -y make
+COPY . /go/src/github.com/pactflow/example-consumer-golang
+
+WORKDIR /go/src/github.com/pactflow/example-consumer-golang
+
+CMD ["sh", "-c", "make install && make test"]

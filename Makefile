@@ -117,3 +117,17 @@ install_cli:
 		@echo "--- 🐿 Installing Pact CLI dependencies"; \
 		curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash -x; \
   fi
+
+## ======================
+## Docker
+## ======================
+ 
+GO_VERSION?=1.22
+IMAGE_VARIANT?=debian
+docker_build:
+	docker build -f Dockerfile.$(IMAGE_VARIANT) --build-arg GO_VERSION=${GO_VERSION} -t pactflow/example-consumer-golang-$(IMAGE_VARIANT) .
+
+docker_test: docker_build
+	docker run \
+		--rm \
+		pactflow/example-consumer-golang-$(IMAGE_VARIANT)

@@ -61,3 +61,40 @@ jobs:
       - name: Deploy
         run: GIT_BRANCH=${GIT_REF:11} make deploy
         if: github.ref == 'refs/heads/master'
+
+  test-containers:
+    continue-on-error: ${{ matrix.experimental }}
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}-${{ matrix.variant }}-${{ matrix.go-version }}-test-container
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+        go-version: ["1.22", "1.23"]
+        variant: [debian]
+        experimental: [false]
+        include:
+          - variant: alpine
+            go-version: 1.22
+            experimental: true
+            os: ubuntu-latest
+          - variant: alpine
+            go-version: 1.23
+            experimental: true
+            os: ubuntu-latest
+          - variant: alpine
+            go-version: 1.22
+            experimental: true
+            os: ubuntu-24.04-arm
+          - variant: alpine
+            go-version: 1.23
+            experimental: true
+            os: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test dockerfile
+        run: make docker_test
+        env:
+          GO_VERSION: ${{ matrix.go-version }}
+          IMAGE_VARIANT: ${{ matrix.variant }}
