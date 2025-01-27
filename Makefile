@@ -6,7 +6,7 @@ GITHUB_WEBHOOK_UUID := ""
 PACT_CHANGED_WEBHOOK_UUID := ""
 PACT_CLI="docker run --rm -v ${PWD}:${PWD} -e PACT_BROKER_BASE_URL -e PACT_BROKER_TOKEN pactfoundation/pact-cli:latest"
 export PATH := $(PWD)/pact/bin:$(PATH)
-PACT_GO_VERSION=2.0.8
+PACT_GO_VERSION=2.2.0
 PACT_DOWNLOAD_DIR=/tmp
 ifeq ($(OS),Windows_NT)
 	PACT_DOWNLOAD_DIR=$$TMP
