@@ -5,7 +5,7 @@ go 1.25.0
 toolchain go1.26.3
 
 require (
-	github.com/pact-foundation/pact-go/v2 v2.5.0
+	github.com/pact-foundation/pact-go/v2 v2.5.1
 	github.com/stretchr/testify v1.11.1
 )
 
