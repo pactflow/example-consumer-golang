@@ -44,6 +44,8 @@ github.com/pact-foundation/pact-go/v2 v2.7.0 h1:2WSM+TpjsSqHD4YbSRIoMZRg5pA3SOWZ
 github.com/pact-foundation/pact-go/v2 v2.7.0/go.mod h1:luXsS0lGNgcBh8FEfRiem5bLRh2vtHrYlazQxL7WXm0=
 github.com/pact-foundation/pact-go/v2 v2.7.1 h1:kvpGYA6tw1G7bOieA2VJOB1osAnoLpaUd1cq2a5wrBM=
 github.com/pact-foundation/pact-go/v2 v2.7.1/go.mod h1:7i11o/2afk/YJGdoLjj9WTYlPag1MbUvt4M7k/jAuy4=
+github.com/pact-foundation/pact-go/v2 v2.8.0 h1:jWryuEvHX/8c9a/8q/Vg9BeTW3Kv7jB7/NBWauduXEA=
+github.com/pact-foundation/pact-go/v2 v2.8.0/go.mod h1:/dRCTGZnPDNsPmITsvlAfb4PxikE7d6wJMPE8dSZCmU=
 github.com/pkg/diff v0.0.0-20210226163009-20ebb0f2a09e/go.mod h1:pJLUxLENpZxwdsKMEsNbx1VGcRFpLqf3715MtcvvzbA=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
