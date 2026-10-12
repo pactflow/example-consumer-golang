@@ -2,7 +2,7 @@ module github.com/pactflow/example-consumer-golang
 
 go 1.25.0
 
-toolchain go1.27.1
+toolchain go1.27.2
 
 require (
 	github.com/pact-foundation/pact-go/v2 v2.8.0
